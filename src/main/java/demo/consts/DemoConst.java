@@ -11,8 +11,8 @@ public class DemoConst {
             "useUnicode=true&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Los_Angeles";
 
 
-    public static final String DB_USERNAME= "root";
+    public static final String DB_USERNAME= "cs122b";
 
-    public static final String DB_PASSWORD = "7Mhu875!";
+    public static final String DB_PASSWORD = "cs122Bpassword!";
 
 }
