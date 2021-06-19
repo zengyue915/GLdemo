@@ -1,0 +1,31 @@
+
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: cs122b
+    password: cs122Bpassword!
+    url: jdbc:mysql://127.0.0.1:3306/geo_db?characterEncoding=utf-8&&useSSL=false&&serverTimezone=PST
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: false
+    #Cosole log config
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mappers/*.xml
+
+
+
+logging:
+  pattern:
+    console: "[%thread] %-5level %logger{36} - %msg%n"
+
+server:
+  servlet:
+    session:
+      timeout: 120
+  port: 8888

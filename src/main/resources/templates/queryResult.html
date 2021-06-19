@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Query Result</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link th:href="@{/queryResult.css}" rel="stylesheet" />
+</head>
+
+<body>
+<!-- Navbar -->
+<div class="w3-top">
+    <div class="w3-bar w3-black w3-card">
+        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+        <a href="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+        <a href="getfile" class="w3-bar-item w3-button w3-padding-large w3-hide-small">UPLOAD</a>
+        <a href="query" class="w3-bar-item w3-button w3-padding-large w3-hide-small">QUERY</a>
+        <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
+    </div>
+</div>
+
+<!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+    <a href="getfile" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">UPLOAD</a>
+    <a href="query" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">QUERY</a>
+</div>
+
+<div class="w3-container w3-center" style="margin-top: 2%;">
+    <h3 class="result_head">Query Result</h3>
+</div>
+
+<button class="w3-btn w3-black w3-round-large" value="Download" onclick="dlLink()" style="margin-left: 5%;">Download File</button>
+
+<div class="result_box">
+
+    <table id="result_table">
+        <thead>
+        <tr>
+            <th> ID </th>
+            <th> RA </th>
+            <th> DE </th>
+            <th> MagFilter </th>
+            <th> MagFaintest</th>
+            <th> MagBrightness </th>
+            <th> QSOorigin </th>
+            <th> Method </th>
+            <th> PossibleType </th>
+            <th> CandidateStatus </th>
+            <th> Notes </th>
+            <th> Comments </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${result.empty}">
+            <td colspan="2"> No Results Available </td>
+        </tr>
+        <tr th:each="coord : ${result}">
+            <td><span th:text="${coord.ID}"> ID </span></td>
+            <td><span th:text="${coord.RA}"> RA </span></td>
+            <td><span th:text="${coord.DE}"> DE </span></td>
+            <td><span th:text="${coord.MagFilter}"> MagFilter </span></td>
+            <td><span th:text="${coord.MagBrightness}"> MagBrightness </span></td>
+            <td><span th:text="${coord.MagFaintest}"> MagFaintest </span></td>
+            <td><span th:text="${coord.QSOorigin}"> QSOorigin </span></td>
+            <td><span th:text="${coord.Method}"> Method </span></td>
+            <td><span th:text="${coord.PossibleType}"> PossibleType </span></td>
+            <td><span th:text="${coord.CandidateStatus}"> CandidateStatus </span></td>
+            <td><span th:text="${coord.Notes}"> Notes </span></td>
+            <td>
+                <span th:text="${coord.Comment}"> Comment </span>
+                <button type="button"  onclick="updateComment()" th:attr="onclick=|updateComment('${coord.ID}')|" ></button>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+<!--<button id="myButton" class="float-left submit-button" >Home</button>-->
+
+<script type="text/javascript">
+    // document.getElementById("myButton").onclick = function () {
+    //     location.href = "/";
+    // };
+    function updateComment(id) {
+        var comment = prompt("Please enter comment");
+        if (comment != null) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/addComments", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            xhr.send(JSON.stringify({
+                id: id,
+                comments:comment}));
+        }
+    }
+
+    function dlLink() {
+        var downloadURL = "http://localhost:8888/downloadresult" + window.location.search;
+        console.log("dlURL:");console.log(downloadURL);
+        location.href=downloadURL;
+    }
+
+
+    function getQueryVar(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split('&');
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split('=');
+            if (decodeURIComponent(pair[0]) == variable) {
+                return decodeURIComponent(pair[1]);
+            }
+        }
+        console.log('Query variable %s not found', variable);
+    }
+</script>
+
+
+
+</body>
+</html>
