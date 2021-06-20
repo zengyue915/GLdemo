@@ -58,7 +58,7 @@
             <td colspan="2"> No Results Available </td>
         </tr>
         <tr th:each="coord : ${result}">
-            <td><span th:text="${coord.ID}"> ID </span></td>
+            <td><a th:href="@{/singlePoint/(id=${coord.ID})}"> <span th:text="${coord.ID}"> ID </span> </a></td>
             <td><span th:text="${coord.RA}"> RA </span></td>
             <td><span th:text="${coord.DE}"> DE </span></td>
             <td><span th:text="${coord.MagFilter}"> MagFilter </span></td>
