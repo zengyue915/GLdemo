@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Query Result</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link th:href="@{/queryResult.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
+</head>
+
+<body>
+<!-- Navbar -->
+<div class="w3-top">
+    <div class="w3-bar w3-black w3-card">
+        <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+        <a href="/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+        <a href="getfile" class="w3-bar-item w3-button w3-padding-large w3-hide-small">UPLOAD</a>
+        <a href="query" class="w3-bar-item w3-button w3-padding-large w3-hide-small">QUERY</a>
+        <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
+    </div>
+</div>
+
+<!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+    <a href="getfile" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">UPLOAD</a>
+    <a href="query" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">QUERY</a>
+</div>
+
+<div class="w3-container w3-center" style="margin-top: 2%;">
+    <h3 class="result_head">Query Result</h3>
+</div>
+
+<button class="w3-btn w3-black w3-round-large" value="Download" onclick="dlLink()" style="margin-left: 5%;">Download File</button>
+
+<div class="result_box">
+
+    <table id="result_table">
+        <thead>
+        <tr>
+            <th> ID </th>
+            <th> RA </th>
+            <th> DE </th>
+            <th> MagFilter </th>
+            <th> MagFaintest</th>
+            <th> MagBrightness </th>
+            <th> QSOorigin </th>
+            <th> Method </th>
+            <th> PossibleType </th>
+            <th> CandidateStatus </th>
+            <th> Notes </th>
+            <th> Comments </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${result.empty}">
+            <td colspan="2"> No Results Available </td>
+        </tr>
+        <tr th:each="coord : ${result}">
+            <td><a th:href="@{/singlePoint/(id=${coord.ID})}"> <span th:text="${coord.ID}"> ID </span> </a></td>
+            <td><span th:text="${coord.RA}"> RA </span></td>
+            <td><span th:text="${coord.DE}"> DE </span></td>
+            <td><span th:text="${coord.MagFilter}"> MagFilter </span></td>
+            <td><span th:text="${coord.MagBrightness}"> MagBrightness </span></td>
+            <td><span th:text="${coord.MagFaintest}"> MagFaintest </span></td>
+            <td><span th:text="${coord.QSOorigin}"> QSOorigin </span></td>
+            <td><span th:text="${coord.Method}"> Method </span></td>
+            <td><span th:text="${coord.PossibleType}"> PossibleType </span></td>
+            <td><span th:text="${coord.CandidateStatus}"> CandidateStatus </span></td>
+            <td><span th:text="${coord.Notes}"> Notes </span></td>
+            <td>
+                <span th:text="${coord.Comment}"> Comment </span>
+                <button type="button"  onclick="updateComment()" th:attr="onclick=|updateComment('${coord.ID}')|" ></button>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+<!--<button id="myButton" class="float-left submit-button" >Home</button>-->
+
+
+<div id="aladin-lite-div" style="width:400px;height:400px;"></div>
+
+
+</body>
+
+
+
+<script type="text/javascript">
+    // document.getElementById("myButton").onclick = function () {
+    //     location.href = "/";
+    // };
+    function updateComment(id) {
+        var comment = prompt("Please enter comment");
+        if (comment != null) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/addComments", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            xhr.send(JSON.stringify({
+                id: id,
+                comments:comment}));
+        }
+    }
+
+    function dlLink() {
+        var downloadURL = "http://localhost:8888/downloadresult" + window.location.search;
+        console.log("dlURL:");console.log(downloadURL);
+        location.href=downloadURL;
+    }
+
+
+    function getQueryVar(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split('&');
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split('=');
+            if (decodeURIComponent(pair[0]) == variable) {
+                return decodeURIComponent(pair[1]);
+            }
+        }
+        console.log('Query variable %s not found', variable);
+    }
+</script>
+
+
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.1.min.js" charset="utf-8"></script>
+
+<script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+    // var aladin = A.aladin('#aladin-lite-div', {survey: "P/DSS2/color", fov:60});
+    // var cat = A.catalog({name: 'Some markers', sourceSize: 18});
+    // aladin.addCatalog(cat);
+    // cat.addSources([A.marker(56.87115, 24.10514, {popupTitle: 'Alcyone', popupDesc: '<em>Bmag:</em> 2.806<br/><em>Spectral type:</em> B7III<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME%20ALCYONE&submit=submit">in Simbad</a>'})]);
+    // cat.addSources([A.marker(57.29673, 24.13671, {popupTitle: 'Pleione', popupDesc: '<em>Bmag:</em> 4.97<br/><em>Spectral type:</em> B8vne<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME+PLEIONE&NbIdent=1">in Simbad</a>'})]);
+    // cat.addSources([A.marker(56.58156, 23.94836, {popupTitle: 'Merope', popupDesc: '<em>Bmag:</em> 4.113<br/><em>Spectral type:</em> BVI4e<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=V*+V971+Tau&NbIdent=1">in Simbad</a>'})]);
+    // cat.addSources([A.marker(56.45669, 24.36775, {popupTitle: 'Maia', popupDesc: '<em>Bmag:</em> 3.812<br/><em>Spectral type:</em> B8III<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME+MAIA&NbIdent=1">in Simbad</a>'})]);
+    // cat.addSources([A.marker(56.21890, 24.11334, {popupTitle: 'Electra', popupDesc: '<em>Bmag:</em> 3.612<br/><em>Spectral type:</em> B6IIIe<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME+ELECTRA&NbIdent=1">in Simbad</a>'})]);
+    // cat.addSources([A.marker(57.29059, 24.05342, {popupTitle: 'Atlas', popupDesc: '<em>Bmag:</em> 3.54<br/><em>Spectral type:</em> B8III<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME+ATLAS&NbIdent=1">in Simbad</a>'})]);
+    // cat.addSources([A.marker(56.30207, 24.46728, {popupTitle: 'Taygeta', popupDesc: '<em>Bmag:</em> 4.199<br/><em>Spectral type:</em> B6IV<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME+TAYGETA&NbIdent=1">in Simbad</a>'})]);
+
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var aladin = A.aladin('#aladin-lite-div', {survey: "P/DSS2/color", fov:60});
+    var cat = A.catalog({name: 'Some markers', sourceSize: 18});
+    aladin.addCatalog(cat);
+    var model = /*[[${result}]]*/ 'default';
+    console.log(model);
+
+    for(let i=0; i<model.length; i++){
+        var ra = model[i]["ra"];
+        var de = model[i]["de"];
+        var id = model[i]["id"];
+        var notes = model[i]["notes"];
+        cat.addSources([A.marker(ra, de, {popupTitle: id, popupDesc: notes})]);
+    }
+
+    /*]]>*/
+</script>
+
+</html>
