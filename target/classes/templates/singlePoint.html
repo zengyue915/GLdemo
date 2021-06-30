@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Single Point</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link th:href="@{/singlePoint.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
+</head>
+<body>
+
+<section class="container">
+    <div id="aladin-lite-div-left" style="width:400px;height:400px;"></div>
+    <div id="aladin-lite-div-right" style="width:400px;height:400px;"></div>
+</section>
+
+</body>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.1.min.js" charset="utf-8"></script>
+
+<script type="text/javascript" src="https://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+    // var aladin = A.aladin('#aladin-lite-div', {survey: "P/DSS2/color", fov:60});
+    // var cat = A.catalog({name: 'Some markers', sourceSize: 18});
+    // aladin.addCatalog(cat);
+    // cat.addSources([A.marker(56.87115, 24.10514, {popupTitle: 'Alcyone', popupDesc: '<em>Bmag:</em> 2.806<br/><em>Spectral type:</em> B7III<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME%20ALCYONE&submit=submit">in Simbad</a>'})]);
+    // cat.addSources([A.marker(57.29673, 24.13671, {popupTitle: 'Pleione', popupDesc: '<em>Bmag:</em> 4.97<br/><em>Spectral type:</em> B8vne<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME+PLEIONE&NbIdent=1">in Simbad</a>'})]);
+    // cat.addSources([A.marker(56.58156, 23.94836, {popupTitle: 'Merope', popupDesc: '<em>Bmag:</em> 4.113<br/><em>Spectral type:</em> BVI4e<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=V*+V971+Tau&NbIdent=1">in Simbad</a>'})]);
+    // cat.addSources([A.marker(56.45669, 24.36775, {popupTitle: 'Maia', popupDesc: '<em>Bmag:</em> 3.812<br/><em>Spectral type:</em> B8III<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME+MAIA&NbIdent=1">in Simbad</a>'})]);
+    // cat.addSources([A.marker(56.21890, 24.11334, {popupTitle: 'Electra', popupDesc: '<em>Bmag:</em> 3.612<br/><em>Spectral type:</em> B6IIIe<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME+ELECTRA&NbIdent=1">in Simbad</a>'})]);
+    // cat.addSources([A.marker(57.29059, 24.05342, {popupTitle: 'Atlas', popupDesc: '<em>Bmag:</em> 3.54<br/><em>Spectral type:</em> B8III<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME+ATLAS&NbIdent=1">in Simbad</a>'})]);
+    // cat.addSources([A.marker(56.30207, 24.46728, {popupTitle: 'Taygeta', popupDesc: '<em>Bmag:</em> 4.199<br/><em>Spectral type:</em> B6IV<br/>More info <a target="_blank" href="https://simbad.u-strasbg.fr/simbad/sim-id?Ident=NAME+TAYGETA&NbIdent=1">in Simbad</a>'})]);
+
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var aladin_left = A.aladin('#aladin-lite-div-left', {survey: "P/DSS2/color", fov:60});
+    var cat_left = A.catalog({name: 'Some markers', sourceSize: 18});
+    aladin_left.addCatalog(cat_left);
+
+    var ra = /*[[${RA}]]*/ 'default';
+    var de = /*[[${DEC}]]*/ 'default';
+    var id = /*[[${ID}]]*/ 'default';
+    var type = /*[[${TYPE}]]*/ 'default';
+
+    console.log("HELLO")
+
+    cat.addSources([A.marker(ra, de, {popupTitle: id, popupDesc: type})]);
+
+
+    /*]]>*/
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var aladin_right = A.aladin('#aladin-lite-div-right', {survey: "P/DSS2/color", fov:60});
+    var cat_right = A.catalog({name: 'Some markers', sourceSize: 18});
+    aladin_right.addCatalog(cat_right);
+
+    var ra = /*[[${RA}]]*/ 'default';
+    var de = /*[[${DEC}]]*/ 'default';
+    var id = /*[[${ID}]]*/ 'default';
+    var type = /*[[${TYPE}]]*/ 'default';
+
+    console.log("HELLO")
+
+    cat.addSources([A.marker(ra, de, {popupTitle: id, popupDesc: type})]);
+
+
+    /*]]>*/
+</script>
+
+</html>
