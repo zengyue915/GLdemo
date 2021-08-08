@@ -60,7 +60,7 @@ public class CommentController {
 //        System.out.println(id.replaceAll("^[ \t]+|[ \t]+$", "").replace(' ','+' ));
         //coodinatesService.updateComments(comments, id);
 
-        return "";
+        return "query";
 
     }
 }
