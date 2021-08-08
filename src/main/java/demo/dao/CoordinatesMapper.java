@@ -24,7 +24,7 @@ public interface CoordinatesMapper {
     @Select ("WITH T1 AS (\n" +
             "\tSELECT coord.ID, coord.RA, coord.DE, coord.MagFilter, coord.MagBrightness, coord.MagFaintest, \n" +
             "\t\t   coord.QSOorigin, coord.Method, coord.PossibleType, coord.CandidateStatus, coord.Notes,\n" +
-            "\t\t   GROUP_CONCAT(DISTINCT CONCAT(comm.datetime,' ', comm.comment) ORDER BY comm.datetime SEPARATOR '\\n') AS comment, st_astext(coord.cords),\n" +
+            "\t\t   GROUP_CONCAT(DISTINCT CONCAT('\n', comm.datetime,'\n', comm.comment) ORDER BY comm.datetime SEPARATOR '\n') AS comment, st_astext(coord.cords),\n" +
             "           #{text} AS planar_degrees\n" +
             "\tFROM Coordinates AS coord\n" +
             "    LEFT JOIN comments AS comm \n" +
@@ -42,7 +42,7 @@ public interface CoordinatesMapper {
     @Select ("WITH T1 AS (\n" +
             "\tSELECT coord.ID, coord.RA, coord.DE, coord.MagFilter, coord.MagBrightness, coord.MagFaintest, \n" +
             "\t\t   coord.QSOorigin, coord.Method, coord.PossibleType, coord.CandidateStatus, coord.Notes,\n" +
-            "\t\t   GROUP_CONCAT(DISTINCT CONCAT(comm.datetime,' ', comm.comment) ORDER BY comm.datetime SEPARATOR '\\n') AS comment, st_astext(coord.cords),\n" +
+            "\t\t   GROUP_CONCAT(DISTINCT CONCAT('\n', comm.datetime,'\n', comm.comment) ORDER BY comm.datetime SEPARATOR '\n') AS comment, st_astext(coord.cords),\n" +
             "           st_distance(st_geomfromtext(#{point} , 4326), coord.cords) AS planar_degrees\n" +
             "\tFROM Coordinates AS coord\n" +
             "    LEFT JOIN comments AS comm \n" +
@@ -59,7 +59,7 @@ public interface CoordinatesMapper {
     @Select ("WITH T1 AS (\n" +
             "\tSELECT coord.ID, coord.RA, coord.DE, coord.MagFilter, coord.MagBrightness, coord.MagFaintest, \n" +
             "\t\t   coord.QSOorigin, coord.Method, coord.PossibleType, coord.CandidateStatus, coord.Notes,\n" +
-            "\t\t   GROUP_CONCAT(DISTINCT CONCAT(comm.datetime,' ', comm.comment) ORDER BY comm.datetime SEPARATOR '\\n') AS comment, st_astext(coord.cords),\n" +
+            "\t\t   GROUP_CONCAT(DISTINCT CONCAT('\n', comm.datetime,'\n', comm.comment) ORDER BY comm.datetime SEPARATOR '\n') AS comment, st_astext(coord.cords),\n" +
             "           st_distance(st_geomfromtext(#{point} , 4326), coord.cords) AS planar_degrees\n" +
             "\tFROM Coordinates AS coord\n" +
             "    LEFT JOIN comments AS comm \n" +
@@ -75,7 +75,7 @@ public interface CoordinatesMapper {
     @Select ("WITH T1 AS (\n" +
             "\tSELECT coord.ID, coord.RA, coord.DE, coord.MagFilter, coord.MagBrightness, coord.MagFaintest, \n" +
             "\t\t   coord.QSOorigin, coord.Method, coord.PossibleType, coord.CandidateStatus, coord.Notes,\n" +
-            "\t\t   GROUP_CONCAT(DISTINCT CONCAT(comm.datetime,' ', comm.comment) ORDER BY comm.datetime SEPARATOR '\\n') AS comment, st_astext(coord.cords),\n" +
+            "\t\t   GROUP_CONCAT(DISTINCT CONCAT('\n', comm.datetime,'\n', comm.comment) ORDER BY comm.datetime SEPARATOR '\n') AS comment, st_astext(coord.cords),\n" +
             "           st_distance(st_geomfromtext(#{point} , 4326), coord.cords) AS planar_degrees\n" +
             "\tFROM Coordinates AS coord\n" +
             "    LEFT JOIN comments AS comm \n" +
@@ -94,7 +94,7 @@ public interface CoordinatesMapper {
     @Select ("WITH T1 AS (\n" +
             "\tSELECT coord.ID, coord.RA, coord.DE, coord.MagFilter, coord.MagBrightness, coord.MagFaintest, \n" +
             "\t\t   coord.QSOorigin, coord.Method, coord.PossibleType, coord.CandidateStatus, coord.Notes,\n" +
-            "\t\t   GROUP_CONCAT(DISTINCT CONCAT(comm.datetime,' ', comm.comment) ORDER BY comm.datetime SEPARATOR '\\n') AS comment, st_astext(coord.cords),\n" +
+            "\t\t   GROUP_CONCAT(DISTINCT CONCAT('\n', comm.datetime,'\n', comm.comment) ORDER BY comm.datetime SEPARATOR '\n') AS comment, st_astext(coord.cords),\n" +
             "           st_distance(st_geomfromtext(#{point} , 4326), coord.cords) AS planar_degrees\n" +
             "\tFROM Coordinates AS coord\n" +
             "    LEFT JOIN comments AS comm \n" +
