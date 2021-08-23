@@ -40,7 +40,7 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var aladin_left = A.aladin('#aladin-lite-div-left', {survey: "P/PanSTARRS/DR1/color/z/zg/g", fov:35});
+    var aladin_left = A.aladin('#aladin-lite-div-left', {survey: "P/PanSTARRS/DR1/color/z/zg/g", fov:20});
     var cat_left = A.catalog({name: 'Some markers', sourceSize: 18});
     aladin_left.addCatalog(cat_left);
 
@@ -59,7 +59,7 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var aladin_right = A.aladin('#aladin-lite-div-right', {survey: "P/allWISE/color", fov:35})
+    var aladin_right = A.aladin('#aladin-lite-div-right', {survey: "P/allWISE/color", fov:20})
     var cat_right = A.catalog({name: 'Some markers', sourceSize: 18});
     aladin_right.addCatalog(cat_right);
 
