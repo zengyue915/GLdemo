@@ -113,5 +113,5 @@ public interface CoordinatesMapper {
 
     @Insert("INSERT INTO comments (coordinate_id, comment) VALUES (#{id}, #{comments})")
     // @Update("UPDATE Coordinates SET COMMENT = concat(COMMENT, #{comments}) WHERE ID = #{id}")
-    void updateComment(@Param("comments") String comments, @Param("id") String id);
+    int updateComment(@Param("comments") String comments, @Param("id") String id);
 }

@@ -55,24 +55,11 @@ public class UploadController {
             return "redirect:uploadStatus";
         }
 
-        try {
 
+        cscToDB(file);
 
-            // Get the file and save it somewhere
-            byte[] bytes = file.getBytes();
-
-            Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
-            File new_csv = new File(UPLOADED_FOLDER + file.getOriginalFilename());
-            Files.write(path, bytes);
-
-            cscToDB(UPLOADED_FOLDER + file.getOriginalFilename());
-
-            redirectAttributes.addFlashAttribute("message",
-                    "You successfully uploaded '" + file.getOriginalFilename() + "'");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded '" + file.getOriginalFilename() + "'");
 
         return "redirect:/uploadStatus";
     }
@@ -82,7 +69,7 @@ public class UploadController {
         return "uploadstatus";
     }
 
-    private void cscToDB(String csvFilePath){
+    public void cscToDB(MultipartFile file){
 
         String connURL = demo.consts.DemoConst.DB_URL;
         String username = demo.consts.DemoConst.DB_USERNAME;
@@ -99,104 +86,106 @@ public class UploadController {
             conn = DriverManager.getConnection(connURL, username, password);
             conn.setAutoCommit(false);
 
-            FileReader filereader = new FileReader(csvFilePath);
-            CSVReader csvReader = new CSVReader(filereader);
+            // FileReader filereader = new FileReader(csvFilePath);
+            // CSVReader csvReader = new CSVReader(filereader);
 
 
-            List<String[]> allData = csvReader.readAll();
+            // List<String[]> allData = csvReader.readAll();
+            try {
+                byte[] bytes = file.getBytes();
+                String completeData = new String(bytes);
+                String[] rows = completeData.split("\n");
 
-            String[] header;
-            header = allData.get(0);
+                String[] header;
+                header = rows[0].split(",");
+
+                //Assign Column Number based on the header
+                HashMap<String, Integer> map = new HashMap<>();
+
+                columnMap(map, header);
+
+                PrintData.printMap(map);
+
+                String sql = "INSERT INTO Coordinates (ID , RA, DE, MagFilter, MagBrightness, " +
+                        "MagFaintest, QSOorigin, Method, PossibleType, CandidateStatus, Notes, Internal_RA) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
-            //Assign Column Number based on the header
-            HashMap<String, Integer> map = new HashMap<>();
-
-            columnMap(map, header);
-
-            PrintData.printMap(map);
-
-            String sql = "INSERT INTO Coordinates (ID , RA, DE, MagFilter, MagBrightness, " +
-                    "MagFaintest, QSOorigin, Method, PossibleType, CandidateStatus, Notes, Internal_RA) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-
-            PreparedStatement statement = conn.prepareStatement(sql);
+                PreparedStatement statement = conn.prepareStatement(sql);
 
 
 
-            int count = 0;
+                int count = 0;
 
-            String row;
-            for(int i=1; i<allData.size(); i++){
+                String row;
+                for(int i=1; i<rows[i].length(); i++) {
 
-                String[] data = allData.get(i);
+                    String[] data = rows[i].split(",");
 
-                //1.Name
-                System.out.println("Name col:"+ map.get("Name"));
-                System.out.println(data[map.get("Name")]);
-                statement.setString(1,data[map.get("Name")]);
+                    //1.Name
+                    System.out.println("Name col:" + map.get("Name"));
+                    System.out.println(data[map.get("Name")]);
+                    statement.setString(1, data[map.get("Name")]);
 
-                //2.RA
-                int ra_index = map.get("RA");
+                    //2.RA
+                    int ra_index = map.get("RA");
 //              System.out.println(ra_index + " value: " + data[ra_index]);
-                double ra = Double.parseDouble(data[ra_index]);
+                    double ra = Double.parseDouble(data[ra_index]);
 //                System.out.println(ra);
-                statement.setDouble(2,ra);
+                    statement.setDouble(2, ra);
 
-                //3.DEC
-                statement.setString(3,data[map.get("DEC")]);
+                    //3.DEC
+                    statement.setString(3, data[map.get("DEC")]);
 
-                //4.MagFilter
-                statement.setString(4,data[map.get("MagFilter")]);
+                    //4.MagFilter
+                    statement.setString(4, data[map.get("MagFilter")]);
 
-                //5.MagBrightness
-                double mb = data[map.get("MagBrightest")].length()==0?0:Double.parseDouble(data[map.get("MagBrightest")]);
+                    //5.MagBrightness
+                    double mb = data[map.get("MagBrightest")].length() == 0 ? 0 : Double.parseDouble(data[map.get("MagBrightest")]);
 
-                statement.setDouble(5,mb);
+                    statement.setDouble(5, mb);
 
-                //6.MagFaintest
-                statement.setDouble(6,Double.parseDouble(data[map.get("MagFaintest")]));
+                    //6.MagFaintest
+                    statement.setDouble(6, Double.parseDouble(data[map.get("MagFaintest")]));
 
-                //7.QSOorigins
-                statement.setString(7,data[map.get("QSOorigin")]);
+                    //7.QSOorigins
+                    statement.setString(7, data[map.get("QSOorigin")]);
 
-                //8.Method
-                statement.setString(8,data[map.get("Method")]);
+                    //8.Method
+                    statement.setString(8, data[map.get("Method")]);
 
-                //9.PossibleType
-                statement.setString(9,data[map.get("PossibleType")]);
+                    //9.PossibleType
+                    statement.setString(9, data[map.get("PossibleType")]);
 
-                //10.CandidatesStatus
-                statement.setString(10,data[map.get("CandidatesStatus")]);
+                    //10.CandidatesStatus
+                    statement.setString(10, data[map.get("CandidatesStatus")]);
 
-                //11.Notes
-                statement.setString(11,data[map.get("Notes")]);
+                    //11.Notes
+                    statement.setString(11, data[map.get("Notes")]);
 
-                //12.Internal_RA
-                double internal_ra = RAConverter.RAto180(ra);
-                statement.setDouble(12, internal_ra);
+                    //12.Internal_RA
+                    double internal_ra = RAConverter.RAto180(ra);
+                    statement.setDouble(12, internal_ra);
 
-                statement.execute();
+                    statement.execute();
 
-                statement.addBatch();
-                count++;
+                    statement.addBatch();
+                    count++;
 
-                if (count % batchSize == 0) {
-                    statement.executeBatch();
+                    if (count % batchSize == 0) {
+                        statement.executeBatch();
+                    }
                 }
 
+                // execute the remaining queries
+                statement.executeBatch();
 
-            }
+                String update = "UPDATE geo_db.Coordinates set cords = ST_GeomFromText(ST_AsText(Point(DE, Internal_RA)),4326);";
+                PreparedStatement update_statement = conn.prepareStatement(update);
+                update_statement.execute();
 
-            csvReader.close();
-
-            // execute the remaining queries
-            statement.executeBatch();
-
-            String update = "UPDATE geo_db.Coordinates set cords = ST_GeomFromText(ST_AsText(Point(DE, Internal_RA)),4326);";
-            PreparedStatement update_statement = conn.prepareStatement(update);
-            update_statement.execute();
+            } catch (Exception e) {
+            };
 
             conn.commit();
             conn.close();
@@ -205,10 +194,6 @@ public class UploadController {
         } catch (SQLException e) {
 //            e.printStackTrace();
             System.out.println(e.getMessage());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -225,33 +210,47 @@ public class UploadController {
             PrintData.printList(headers);
 
             for (int i = 0; i < headers.length; i++) {
-                String lower_case = headers[i].toLowerCase();
+                String lower_case = headers[i].toLowerCase().trim();
                 if (Name.contains(lower_case) && !map.containsKey("Name")) {
+                    System.out.println("LOL >>> Name");
                     map.put("Name", i);
                 } else if (RA.contains(lower_case) && !map.containsKey("RA")) {
+                    System.out.println("LOL >>> RA");
                     map.put("RA", i);
                 } else if (DEC.contains(lower_case) && !map.containsKey("DEC")) {
+                    System.out.println("LOL >>> DEC");
                     map.put("DEC", i);
                 } else if (MagFilter.contains(lower_case) && !map.containsKey("MagFilter")) {
+                    System.out.println("LOL >>> MagFilter");
                     map.put("MagFilter", i);
                 } else if (MagBrightest.contains(lower_case) && !map.containsKey("MagBrightest")) {
+                    System.out.println("LOL >>> MagBrightest");
                     map.put("MagBrightest", i);
                 } else if (MagFaintest.contains(lower_case) && !map.containsKey("MagFaintest")) {
+                    System.out.println("LOL >>> MagFaintest");
                     map.put("MagFaintest", i);
                 } else if (QSOorigin.contains(lower_case) && !map.containsKey("QSOorigin")) {
+                    System.out.println("LOL >>> QSorigin");
                     map.put("QSOorigin", i);
                 } else if (Method.contains(lower_case) && !map.containsKey("Method")) {
+                    System.out.println("LOL >>> Method");
                     map.put("Method", i);
                 } else if (PossibleType.contains(lower_case) && !map.containsKey("PossibleType")) {
+                    System.out.println("LOL >>> PossibleType");
                     map.put("PossibleType", i);
                 } else if (CandidatesStatus.contains(lower_case) && !map.containsKey("CandidatesStatus")) {
+                    System.out.println("LOL >>> CandidatesStatus BEFORE");
                     map.put("CandidatesStatus", i);
-                } else if (Notes.contains(lower_case) && !map.containsKey("Notes")) {
+                } else if (Notes.contains(lower_case)) { // && !map.containsKey("Notes")) {
+                    System.out.println("LOL >>> Notes");
                     map.put("Notes", i);
                 } else {
-                    System.out.println("not matched: "+ headers[i] +"<");
+                    System.out.println("not matched: ");
+                    System.out.println(headers[i].length());
+                    System.out.println(headers[i]);
                     throw new Exception("Column Cannot Match");
                 }
+
 
 
             }

@@ -24,4 +24,6 @@ public class CoordinatesMapperTest extends DemoApplicationTest {
         String point = "POINT( " + dec + " " + ra + ")";
         List<Coordinate> result = mapper.listCoordinatesInfoLimit(point, count);
     }
+
+
 }

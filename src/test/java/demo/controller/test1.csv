@@ -1,0 +1,2 @@
+Name,RA,de,MagFilter,MagBrightest,MagFaintest,QSOorigin,Method,PossibleType,CandidateStatus,Notes
+GRALJ170423.01+713707.57,256.095855,71.61877,Gaia G,18.9,19.2,M63+AR90,ZTFHighCorr,Double,1,Aurea around redder source. Redder source has DR2 astrometry compatible with motion but this may be due to the extended emission.
