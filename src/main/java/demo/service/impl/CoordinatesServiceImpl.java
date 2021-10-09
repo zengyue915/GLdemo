@@ -4,10 +4,13 @@ package demo.service.impl;
 //import com.google.gson.Gson;
 import com.google.gson.Gson;
 import demo.dao.CoordinatesMapper;
+import demo.enums.ResponseEnum;
 import demo.helper.RAConverter;
 import demo.pojo.Coordinate;
 import demo.service.ICoodinatesService;
+import demo.vo.CommentVo;
 import demo.vo.CoordinateVo;
+import demo.vo.ResponseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ public class CoordinatesServiceImpl implements ICoodinatesService{
     @Autowired
     private CoordinatesMapper coordinatesMapper;
 
+    @Deprecated
     @Override
     public String listCoordinates(String ra, String dec, Integer count) {
         //String query = "st_distance(st_geomfromtext('POINT(76.2 40.78)' , 4326), Coordinates.cords) ";
@@ -131,8 +135,19 @@ public class CoordinatesServiceImpl implements ICoodinatesService{
     }
 
     @Override
-    public void updateComments(String comments, String id){
-        coordinatesMapper.updateComment(comments, id);
+    public ResponseVo<CommentVo> updateComments(String comments, String id){
+
+        int row = coordinatesMapper.updateComment(comments, id);
+
+        CommentVo commentVo = new CommentVo();
+
+        if (row <= 0) {
+            commentVo.setSucceed(false);
+        } else {
+            commentVo.setSucceed(true);
+        }
+
+        return ResponseVo.success(commentVo);
     }
 
 

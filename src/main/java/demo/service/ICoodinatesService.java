@@ -1,5 +1,6 @@
 package demo.service;
 
+import demo.vo.CommentVo;
 import demo.vo.CoordinateVo;
 import demo.vo.ResponseVo;
 
@@ -17,6 +18,6 @@ public interface ICoodinatesService {
 
     List<CoordinateVo> neighborsDetailsAllOrder(String ra, String dec, String order_by);
 
-    void updateComments(String comments, String id);
+    ResponseVo<CommentVo> updateComments(String comments, String id);
 
 }

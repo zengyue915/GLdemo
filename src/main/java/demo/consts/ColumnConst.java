@@ -17,7 +17,7 @@ public class ColumnConst {
 
     public static final String[] Method = new String[]{"method"};
 
-    public static final String[]PossibleType = new String[]{"possibletype"};
+    public static final String[] PossibleType = new String[]{"possibletype"};
 
     public static final String[] CandidatesStatus = new String[]{"candidatestatus"};
 

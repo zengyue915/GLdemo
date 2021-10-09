@@ -14,8 +14,8 @@
 <body>
 
 <section class="container">
-    <div id="aladin-lite-div-right" style="width:50%;height:100%;"></div>
     <div id="aladin-lite-div-left" style="width:50%;height:100%;"></div>
+    <div id="aladin-lite-div-right" style="width:50%;height:100%;"></div>
 </section>
 
 </body>
@@ -40,7 +40,7 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var aladin_left = A.aladin('#aladin-lite-div-left', {survey: "P/PanSTARRS/DR1/z", fov:60});
+    var aladin_left = A.aladin('#aladin-lite-div-left', {survey: "P/PanSTARRS/DR1/color/z/zg/g", fov:20});
     var cat_left = A.catalog({name: 'Some markers', sourceSize: 18});
     aladin_left.addCatalog(cat_left);
 
@@ -59,7 +59,7 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var aladin_right = A.aladin('#aladin-lite-div-right', {survey: "P/PanSTARRS/DR1/g", fov:60})
+    var aladin_right = A.aladin('#aladin-lite-div-right', {survey: "P/allWISE/color", fov:20})
     var cat_right = A.catalog({name: 'Some markers', sourceSize: 18});
     aladin_right.addCatalog(cat_right);
 

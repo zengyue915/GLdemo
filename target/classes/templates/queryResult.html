@@ -107,6 +107,11 @@
                 id: id,
                 comments:comment}));
         }
+
+        // TODO: find a way to check for CommentController Success before continuing with the code
+        setTimeout(() => {  location.reload(true); }, 1500);
+
+        console.log("CONTINUED EXECUTING!!!!");
     }
 
     function dlLink() {
@@ -151,7 +156,7 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var aladin = A.aladin('#aladin-lite-div', {survey: "P/DSS2/color", fov:60});
+    var aladin = A.aladin('#aladin-lite-div', {survey: "P/DSS2/color", fov:20});
     var cat = A.catalog({name: 'Some markers', sourceSize: 18});
     aladin.addCatalog(cat);
     var model = /*[[${result}]]*/ 'default';
