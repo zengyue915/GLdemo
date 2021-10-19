@@ -8,8 +8,7 @@ public class DemoConst {
 
     //public static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/geo_db?characterEncoding=utf-8&&useSSL=false&&serverTimezone=PST";
     public static String DB_URL = "jdbc:mysql://127.0.0.1:3306/geo_db?" +
-            "useUnicode=true&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Los_Angeles";
-
+            "useUnicode=true&allowPublicKeyRetrieval=true&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Los_Angeles";
 
     public static final String DB_USERNAME= "cs122b";
 
