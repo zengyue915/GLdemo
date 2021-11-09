@@ -81,15 +81,20 @@ public class SyncController {
     private static HashSet<String> Notes= new HashSet<>(Arrays.asList(ColumnConst.Notes));
 
     @GetMapping("/spreadsheet")
-    public String queryResult() throws GeneralSecurityException, IOException {
+    public String queryResult(@RequestParam(required=false, defaultValue = "1AuTAPmVCxBxgtAYInN4u0H9jwwEp3pUHrI2uYPp_tdI") String spreadsheetId,
+                              @RequestParam(required=false, defaultValue = "Sheet1") String sheet,
+                              @RequestParam(required=false, defaultValue = "coordinates") String table) throws GeneralSecurityException, IOException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        final String spreadsheetId = "1AuTAPmVCxBxgtAYInN4u0H9jwwEp3pUHrI2uYPp_tdI";
-        final String range = "Sheet1!A1:K3";
         Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+
+        System.out.println("HERE: " + service.toString());
+
+        System.out.println("SERVICE SHEET>>>>>" +service.spreadsheets().values().get(spreadsheetId, sheet));
+
         ValueRange response = service.spreadsheets().values()
-                .get(spreadsheetId, range)
+                .get(spreadsheetId, sheet)
                 .execute();
 
         // 2-D Array representing cells of spreadsheet
@@ -98,7 +103,7 @@ public class SyncController {
         if (values == null || values.isEmpty()) {
             System.out.println("No data found.");
         } else {
-            listToDB(values);
+            listToDB(values, table);
         }
 
         return "home";
@@ -126,12 +131,12 @@ public class SyncController {
                 .build();
 
         // need to find to way to resolve the bind error
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8899).build();
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8895).build();
 
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public void listToDB(List<List<Object>> completeData){
+    public void listToDB(List<List<Object>> completeData, String table){
 
         String connURL = demo.consts.DemoConst.DB_URL;
         String username = demo.consts.DemoConst.DB_USERNAME;
@@ -190,7 +195,9 @@ public class SyncController {
 
                 PrintData.printMap(map);
 
-                String sql = "INSERT INTO Coordinates (ID , RA, DE, MagFilter, MagBrightness, " +
+                // TODO: change the table to question mark later
+                //       ask professor!
+                String sql = "INSERT INTO " + table + " (ID , RA, DE, MagFilter, MagBrightness, " +
                         "MagFaintest, QSOorigin, Method, PossibleType, CandidateStatus, Notes, Internal_RA) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -201,9 +208,9 @@ public class SyncController {
 
                 int count = 0;
 
+
                 String row;
                 for(int i=1; i<completeData.size(); i++) {
-
                     List<Object> data = completeData.get(i);
 
                     //1.Name
