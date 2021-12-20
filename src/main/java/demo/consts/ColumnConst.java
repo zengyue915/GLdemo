@@ -1,7 +1,7 @@
 package demo.consts;
 
 public class ColumnConst {
-    public static final String[] Name = new String[]{"name"};
+    public static final String[] Name = new String[]{"name", "id"};
 
     public static final String[] RA = new String[]{"ra"};
 
@@ -9,7 +9,7 @@ public class ColumnConst {
 
     public static final String[] MagFilter = new String[]{"magfilter", "filter"};
 
-    public static final String[] MagBrightest = new String[]{"magbrightest"};
+    public static final String[] MagBrightest = new String[]{"magbrightest", "magbrightness"};
 
     public static final String[] MagFaintest = new String[]{"magfaintest"};
 
