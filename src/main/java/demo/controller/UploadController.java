@@ -106,6 +106,7 @@ public class UploadController {
 
                 PrintData.printMap(map);
 
+                // TODO: future implementation, do not hard code the columns from table -> describe table
                 String sql = "INSERT INTO Coordinates (ID , RA, DE, MagFilter, MagBrightness, " +
                         "MagFaintest, QSOorigin, Method, PossibleType, CandidateStatus, Notes, Internal_RA) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

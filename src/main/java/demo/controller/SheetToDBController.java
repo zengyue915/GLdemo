@@ -21,14 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 import demo.consts.DemoConst;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.Result;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -61,7 +59,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
-public class SyncController {
+public class SheetToDBController {
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
     private static String CREDENTIALS_FILE_PATH = "C:\\Users\\calvi\\Desktop\\yue_project\\GLdemo\\upload\\client_secret_186090729246-l4irkfjndo030endbh59glh2lv0a5ead.apps.googleusercontent.com.json";
     private static JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -80,7 +78,7 @@ public class SyncController {
     private static HashSet<String> CandidatesStatus= new HashSet<>(Arrays.asList(ColumnConst.CandidatesStatus));
     private static HashSet<String> Notes= new HashSet<>(Arrays.asList(ColumnConst.Notes));
 
-    @GetMapping("/spreadsheet")
+    @GetMapping("/spreadsheet-to-db")
     public String queryResult(@RequestParam(required=false, defaultValue = "1AuTAPmVCxBxgtAYInN4u0H9jwwEp3pUHrI2uYPp_tdI") String spreadsheetId,
                               @RequestParam(required=false, defaultValue = "Sheet1") String sheet,
                               @RequestParam(required=false, defaultValue = "coordinates") String table) throws GeneralSecurityException, IOException {
@@ -100,13 +98,15 @@ public class SyncController {
         // 2-D Array representing cells of spreadsheet
         List<List<Object>> values = response.getValues();
 
+        boolean success_rate;
         if (values == null || values.isEmpty()) {
             System.out.println("No data found.");
+            success_rate = false;
         } else {
-            listToDB(values, table);
+            success_rate = listToDB(values, table);
         }
 
-        return "home";
+        return success_rate ? "home" : "error";
     }
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
@@ -136,7 +136,7 @@ public class SyncController {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public void listToDB(List<List<Object>> completeData, String table){
+    public boolean listToDB(List<List<Object>> completeData, String table){
 
         String connURL = demo.consts.DemoConst.DB_URL;
         String username = demo.consts.DemoConst.DB_USERNAME;
@@ -146,6 +146,7 @@ public class SyncController {
 
         Connection conn = null;
 
+        System.out.println("BEFORE TRYYYYY");
 
         try{
 
@@ -195,8 +196,29 @@ public class SyncController {
 
                 PrintData.printMap(map);
 
-                // TODO: change the table to question mark later
-                //       ask professor!
+
+                String query = "SHOW tables;";
+                System.out.println("BEFORE STATEMENTS");
+                Statement stmt = conn.createStatement();
+                System.out.println("AFTER STATEMENTS");
+                ResultSet rs = stmt.executeQuery(query);
+                System.out.println("AFTER EXECUTE");
+                System.out.println(rs.toString());
+
+                HashSet<String> table_set = new HashSet<>();
+
+                while (rs.next()) {
+                    String curr_table = rs.getString(1);
+                    table_set.add(curr_table);
+                }
+
+                if (!table_set.contains(table)) {
+                    return false;
+                }
+
+
+
+                // TODO: future implementation, do not hard code the columns from table -> describe table
                 String sql = "INSERT INTO " + table + " (ID , RA, DE, MagFilter, MagBrightness, " +
                         "MagFaintest, QSOorigin, Method, PossibleType, CandidateStatus, Notes, Internal_RA) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -273,6 +295,7 @@ public class SyncController {
                 PreparedStatement update_statement = conn.prepareStatement(update);
                 update_statement.execute();
 
+
             } catch (Exception e) {
             };
 
@@ -280,8 +303,10 @@ public class SyncController {
             conn.close();
 
 
+
         } catch (SQLException e) {
 //            e.printStackTrace();
+            System.out.println("ERROR");
             System.out.println(e.getMessage());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -289,6 +314,7 @@ public class SyncController {
             e.printStackTrace();
         }
 
+        return true;
 
     }
 
